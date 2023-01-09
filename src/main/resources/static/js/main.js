@@ -4,6 +4,8 @@ var allNodes = {};
 var grid = [];
 var startNode;
 var finishNode;
+
+
 class GridNode {
   constructor(row, col, isWall, isStart, isFinish, id, distance) {
     this.row = row;
@@ -63,6 +65,7 @@ class GridNode {
     this.distance = distance;
   }
 }
+
 
 window.onload = function () {
   var x = 40;
@@ -218,7 +221,8 @@ function animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
     }
     setTimeout(() => {
       const node = visitedNodesInOrder[i];
-      document.getElementById(node.row+"-"+node.col).className ="grid node-visited";
+      document.getElementById(node.row + "-" + node.col).className =
+        "grid node-visited";
     }, 10 * i);
   }
 }
@@ -227,7 +231,8 @@ function animateShortestPath(nodesInShortestPathOrder) {
   for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
     setTimeout(() => {
       const node = nodesInShortestPathOrder[i];
-      document.getElementById(node.row+"-"+node.col).className = "grid node-shortest-path";
+      document.getElementById(node.row + "-" + node.col).className =
+        "grid node-shortest-path";
     }, 50 * i);
   }
 }

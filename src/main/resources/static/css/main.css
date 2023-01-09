@@ -20,6 +20,7 @@
 
 .grid:hover{
     background-color: aqua;
+    cursor: pointer;
 }
 
 .wall-grid{

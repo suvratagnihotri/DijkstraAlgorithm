@@ -4,6 +4,7 @@ var allNodes = {};
 var grid = [];
 var startNode;
 var finishNode;
+var userName = "suvrat";
 
 
 class GridNode {
@@ -15,6 +16,7 @@ class GridNode {
     this.isFinish = isFinish;
     this.id = id;
     this.distance = distance;
+    
     this.previousNode = null;
   }
 
@@ -235,4 +237,87 @@ function animateShortestPath(nodesInShortestPathOrder) {
         "grid node-shortest-path";
     }, 50 * i);
   }
+}
+
+
+function connect(event) {
+
+  // if(userName) {
+      // userNamePage.classList.add('hidden');
+      // chatPage.classList.remove('hidden');
+
+      var socket = new SockJS('http://localhost:8080/testchat');
+      stompClient = Stomp.over(socket);
+
+      stompClient.connect({}, onConnected, onError);
+  // }
+  // event.preventDefault();
+}
+
+
+function onConnected() {
+  alert(userName);
+  // Subscribe to the Public Topic
+  stompClient.subscribe('/start/initial.'+userName, onMessageReceived);
+
+
+  // Tell your userName to the server
+  stompClient.send("/current/adduser."+userName,
+      {},
+      JSON.stringify
+      (
+          {
+              sender: userName,
+              type: 'JOIN',
+              chat:"test"
+          }
+      )
+  )
+
+  // connectingElement.classList.add('hidden');
+}
+
+
+function onError(error) {
+  connectingElement.textContent = 'It was not possible to connect to WebSocket! Update the page and stay again or contact me as an administrator.\n';
+  connectingElement.style.color = 'red';
+}
+
+
+function send(event) {
+  let messageContent = {  
+                          "startNode":startNode,
+                          "finishNode":finishNode,
+                          "grid":grid,
+                          "allNodes":allNodes
+                      }
+
+  if(messageContent && stompClient) {
+      var chatMessage = {
+          sender: userName,
+          chat: JSON.stringify(messageContent),
+          content: JSON.stringify(messageContent),
+          type: 'CHAT'
+      };
+
+      stompClient.send("/current/resume."+userName, {}, JSON.stringify(chatMessage));
+      messageContent= '';
+  }
+  // event.preventDefault();
+}
+
+
+function onMessageReceived(payload) {
+  // if(payload.toString().includes("loser")){
+  //     window.alert("You are loser");
+  // }
+  // else if(payload.toString().includes("winner")){
+  //     window.alert("You are loser");
+  // }
+  messageReceivedData = payload;
+  console.log(payload);
+  const message = JSON.parse(messageReceivedData["body"]);
+  console.log(messageReceivedData["body"]);
+  const receivedData = JSON.parse(messageReceivedData["body"]);
+  console.log(receivedData);
 }
